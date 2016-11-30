@@ -280,6 +280,16 @@ class DomainFuzz():
 
 		self.domains = filtered
 
+	
+        # BitSquatting: Anticipates a small portion of systems encountering
+        # hardware errors, resulting in the mutation of the resolved
+        # domain name by 1 bit
+        # e.g.
+        # 01100011 01101110 01101110 0101110 01100011 01101111 01101101
+        #    c        n        n        .       c        o        m
+        #
+        # 01100011 01101111 01101110 0101110 01100011 01101111 01101101
+        #    c        o        n        .       c        o        m
 	def __bitsquatting(self):
 		result = []
 		masks = [1, 2, 4, 8, 16, 32, 64, 128]
@@ -293,35 +303,37 @@ class DomainFuzz():
 
 		return result
 
+	# Homoglyph: Replaces a letter in the domain name
+        # with letters that look similar
 	def __homoglyph(self):
-		glyphs = {
-		'a': [u'à', u'á', u'â', u'ã', u'ä', u'å', u'ɑ', u'а'],
-		'b': ['d', 'lb', 'ib', u'ʙ', u'Ь', u'ｂ'],
-		'c': [u'ϲ', u'с', u'ⅽ'],
-		'd': ['b', 'cl', 'dl', 'di', u'ԁ', u'ժ', u'ⅾ', u'ｄ'],
-		'e': [u'é', u'ê', u'ë', u'ē', u'ĕ', u'ė', u'ｅ', u'е'],
-		'f': [u'Ϝ', u'Ｆ', u'ｆ'],
-		'g': ['q', u'ɢ', u'ɡ', u'Ԍ', u'Ԍ', u'ｇ'],
-		'h': ['lh', 'ih', u'һ', u'ｈ'],
-		'i': ['1', 'l', u'Ꭵ', u'ⅰ', u'ｉ'],
-		'j': [u'ј', u'ｊ'],
-		'k': ['lk', 'ik', 'lc', u'κ', u'ｋ'],
-		'l': ['1', 'i', u'ⅼ', u'ｌ'],
-		'm': ['n', 'nn', 'rn', 'rr', u'ⅿ', u'ｍ'],
-		'n': ['m', 'r', u'ｎ'],
-		'o': ['0', u'Ο', u'ο', u'О', u'о', u'Օ', u'Ｏ', u'ｏ'],
-		'p': [u'ρ', u'р', u'ｐ'],
-		'q': ['g', u'ｑ'],
-		'r': [u'ʀ', u'ｒ'],
-		's': [u'Ⴝ', u'Ꮪ', u'Ｓ', u'ｓ'],
-		't': [u'τ', u'ｔ'],
-		'u': [u'μ', u'υ', u'Ս', u'Ｕ', u'ｕ'],
-		'v': [u'ｖ', u'ѵ', u'ⅴ'],
-		'w': ['vv', u'ѡ', u'ｗ'],
-		'x': [u'ⅹ', u'ｘ'],
-		'y': [u'ʏ', u'γ', u'у', u'Ү', u'ｙ'],
-		'z': [u'ｚ']
-		}
+		 glyphs = {
+                'a': [u'à', u'á', u'â', u'ã', u'ä', u'å', u'ɑ', u'а', '4'],
+                'b': ['d', 'lb', 'ib', u'ʙ', u'Ь', u'ｂ'],
+                'c': [u'ϲ', u'с', u'ⅽ'],
+                'd': ['b', 'cl', 'dl', 'di', u'ԁ', u'ժ', u'ⅾ', u'ｄ'],
+                'e': [u'é', u'ê', u'ë', u'ē', u'ĕ', u'ė', u'ｅ', u'е','3'],
+                'f': [u'Ϝ', u'Ｆ', u'ｆ'],
+                'g': ['q', u'ɢ', u'ɡ', u'Ԍ', u'Ԍ', u'ｇ'],
+                'h': ['lh', 'ih', u'һ', u'ｈ'],
+                'i': ['1', 'l', u'Ꭵ', u'ⅰ', u'ｉ'],
+                'j': [u'ј', u'ｊ'],
+                'k': ['lk', 'ik', 'lc', u'κ', u'ｋ'],
+                'l': ['1', 'i', 'I' , u'ⅼ', u'ｌ'],
+                'm': ['n', 'nn', 'rn', 'rr', u'ⅿ', u'ｍ'],
+                'n': ['m', 'r', u'ｎ'],
+                'o': ['0', u'Ο', u'ο', u'О', u'о', u'Օ', u'Ｏ', u'ｏ'],
+                'p': [u'ρ', u'р', u'ｐ'],
+                'q': ['g', u'ｑ'],
+                'r': [u'ʀ', u'ｒ'],
+                's': [u'Ⴝ', u'Ꮪ', u'Ｓ', u'ｓ'],
+                't': [u'τ', u'ｔ', '4'],
+                'u': [u'μ', u'υ', u'Ս', u'Ｕ', u'ｕ', 'v'],
+                'v': [u'ｖ', u'ѵ', u'ⅴ', 'u'],
+                'w': ['vv', u'ѡ', u'ｗ', 'uu'],
+                'x': [u'ⅹ', u'ｘ'],
+                'y': [u'ʏ', u'γ', u'у', u'Ү', u'ｙ'],
+                'z': [u'ｚ', '2']
+                }
 
 		result = []
 
@@ -350,7 +362,12 @@ class DomainFuzz():
 				result.append(self.domain[:i] + '-' + self.domain[i:])
 
 		return result
-
+        
+	# Insertion: Chooses a letter from closest keys in the keyboard layout
+        # and inserts into the domain name.
+        # E.g.  The neighbors of 'a' are q,w,s,z in QWERTY keyboard layout.
+        #       Users may type one of the neighbor characters by mistake
+        #       while typing 'a'
 	def __insertion(self):
 		result = []
 
@@ -363,6 +380,7 @@ class DomainFuzz():
 
 		return list(set(result))
 
+        # Ommission: Removes one of the letters from the domain name at a time
 	def __omission(self):
 		result = []
 
@@ -385,6 +403,8 @@ class DomainFuzz():
 
 		return list(set(result))
 
+        #Replacement: replaces one of the letters in the domain name
+        # with a letter in proximity of the original letter on the keyboard	
 	def __replacement(self):
 		result = []
 
@@ -405,6 +425,7 @@ class DomainFuzz():
 
 		return result
 
+	#Transposition: swaps two letters within the domain name
 	def __transposition(self):
 		result = []
 
@@ -414,6 +435,7 @@ class DomainFuzz():
 
 		return result
 
+	# Vowel Swap: Swaps vowel letters (aeiou) within the domain name
 	def __vowel_swap(self):
 		vowels = 'aeiou'
 		result = []
@@ -424,14 +446,31 @@ class DomainFuzz():
 					result.append(self.domain[:i] + vowel + self.domain[i+1:])
 
 		return list(set(result))
-
+	
+	# Addition: Adds characters and numbersat to the end of domain name
 	def __addition(self):
 		result = []
 
 		for i in range(97, 123):
 			result.append(self.domain + chr(i))
-
+		
+		for i in range(0, 99):
+                        result.append(self.domain + str(i))
+		
 		return result
+	
+	# Alternative TLDs: Tries different top level domain alternatives
+	def __alternative_tlds(self):
+                result = []
+
+                full_tlds = ['com', 'org', 'edu', 'gov', 'uk', 'net', 'ca', 'de', 'jp', 'fr', 'au', 'us', 'ru', 'ch', 'it', 'nl', 'se', 'no', 'es', 'com.tr', 'gov.tr', 'edu.tr', 'org.tr', 'net.tr', 'co', 'co.uk', 'info', 'biz']
+
+                for tld in full_tlds:
+                        if tld != self.tld:
+                                result.append(self.domain + '.' + tld)
+
+                return list(set(result))
+
 
 	def generate(self):
 		self.domains.append({ 'fuzzer': 'Original*', 'domain-name': self.domain + '.' + self.tld })
@@ -458,7 +497,9 @@ class DomainFuzz():
 			self.domains.append({ 'fuzzer': 'Transposition', 'domain-name': domain + '.' + self.tld })
 		for domain in self.__vowel_swap():
 			self.domains.append({ 'fuzzer': 'Vowel-swap', 'domain-name': domain + '.' + self.tld })
-
+                for domainWithAlternativeTlds in self.__alternative_tlds():
+                        self.domains.append({ 'fuzzer': 'Alternative-TLDs', 'domain-name': domainWithAlternativeTlds})
+		
 		if not self.domain.startswith('www.'):
 			self.domains.append({ 'fuzzer': 'Various', 'domain-name': 'ww' + self.domain + '.' + self.tld })
 			self.domains.append({ 'fuzzer': 'Various', 'domain-name': 'www' + self.domain + '.' + self.tld })

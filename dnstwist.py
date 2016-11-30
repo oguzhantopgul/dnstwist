@@ -403,7 +403,7 @@ class DomainFuzz():
 
 		return list(set(result))
 
-        #Replacement: replaces one of the letters in the domain name
+        # Replacement: replaces one of the letters in the domain name
         # with a letter in proximity of the original letter on the keyboard	
 	def __replacement(self):
 		result = []
@@ -425,7 +425,7 @@ class DomainFuzz():
 
 		return result
 
-	#Transposition: swaps two letters within the domain name
+	# Transposition: swaps two letters within the domain name
 	def __transposition(self):
 		result = []
 
